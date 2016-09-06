@@ -3,19 +3,19 @@
  */
 
 "use strict"
-let names = require('./foreign_names.json');
 
 class Names{
+
     constructor(){
+        this.names = require('./foreign_names.json');
     }
 
 
     showNames(){
-        var num = Math.floor(Math.random() * 25000);
-        return names[num].name;
+        var num = Math.floor(Math.random() * this.names.length);
+        return this.names[num].name;
     }
 
 }
 
-
-exports.Names = Names;
+module.exports = Names;
