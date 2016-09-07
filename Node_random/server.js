@@ -1,29 +1,19 @@
-// /**
-//  * Created by valeriy on 06.09.16.
-//  */
-// "use strict"
-// var Name = require('./storage/user')
-//
-// var name = new Name();
-//
-// var http = require('http');
-//
-// var  server = new http.Server();
-//
-// server.listen(8096, '127.0.0.1');
-//
-// server.on('request', function (req, res) {
-//     res.end(name.showNames());
-// })
-//
+/**
+ * Created by valeriy on 06.09.16.
+ */
+
+"use strict"
 
 var express = require('express');
 var app = express();
 
+
 // This responds with "Hello World" on the homepage
-app.get('/', function (req, res) {
+app.get('/random/names', function (req, res) {
+    var Names = require('./storage/user')
+    var name = new Names();
     console.log("Got a GET request for the homepage");
-    res.send('Hello GET');
+    res.send('Random name is: ' + name.showName());
 })
 
 
@@ -34,7 +24,7 @@ app.post('/', function (req, res) {
 })
 
 // This responds a DELETE request for the /del_user page.
-app.delete('/del', function (req, res) {
+app.delete('/del_user', function (req, res) {
     console.log("Got a DELETE request for /del_user");
     res.send('Hello DELETE');
 })
@@ -54,8 +44,8 @@ app.get('/ab*cd', function(req, res) {
 
 var server = app.listen(8081, function () {
 
-    var host = server.address().address
-    var port = server.address().port
+    var host = server.address().address;
+    var port = server.address().port;
 
     console.log("Example app listening at http://%s:%s", host, port)
 

@@ -11,7 +11,7 @@ class Names{
     }
 
 
-    showNames(){
+    showName(){
         var num = Math.floor(Math.random() * this.names.length);
         return this.names[num].name;
     }
