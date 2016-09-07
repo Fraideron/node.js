@@ -1,17 +1,62 @@
-/**
- * Created by valeriy on 06.09.16.
- */
-"use strict"
-var Name = require('./storage/user')
+// /**
+//  * Created by valeriy on 06.09.16.
+//  */
+// "use strict"
+// var Name = require('./storage/user')
+//
+// var name = new Name();
+//
+// var http = require('http');
+//
+// var  server = new http.Server();
+//
+// server.listen(8096, '127.0.0.1');
+//
+// server.on('request', function (req, res) {
+//     res.end(name.showNames());
+// })
+//
 
-var name = new Name();
+var express = require('express');
+var app = express();
 
-var http = require('http');
+// This responds with "Hello World" on the homepage
+app.get('/', function (req, res) {
+    console.log("Got a GET request for the homepage");
+    res.send('Hello GET');
+})
 
-var  server = new http.Server();
 
-server.listen(8096, '127.0.0.1');
+// This responds a POST request for the homepage
+app.post('/', function (req, res) {
+    console.log("Got a POST request for the homepage");
+    res.send('Hello POST');
+})
 
-server.on('request', function (req, res) {
-    res.end(name.showNames());
+// This responds a DELETE request for the /del_user page.
+app.delete('/del', function (req, res) {
+    console.log("Got a DELETE request for /del_user");
+    res.send('Hello DELETE');
+})
+
+// This responds a GET request for the /list_user page.
+app.get('/list_user', function (req, res) {
+    console.log("Got a GET request for /list_user");
+    res.send('Page Listing');
+})
+
+// This responds a GET request for abcd, abxcd, ab123cd, and so on
+app.get('/ab*cd', function(req, res) {
+    console.log("Got a GET request for /ab*cd");
+    res.send('Page Pattern Match');
+})
+
+
+var server = app.listen(8081, function () {
+
+    var host = server.address().address
+    var port = server.address().port
+
+    console.log("Example app listening at http://%s:%s", host, port)
+
 })
