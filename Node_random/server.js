@@ -12,11 +12,12 @@ var name = new Names();
 var randomName = "";
 
 
+
 // This responds with "Hello World" on the homepage
 app.get('/random/names', function (req, res) {
     console.log("Got a GET request for the random names");
     randomName = name.showName();
-    res.send('<a href="./'+ randomName +'">' + randomName);
+    res.send('<a href="./names/'+ randomName +'">' + randomName);
 })
 
 
@@ -34,11 +35,19 @@ app.get('/storage/json', function (req, res) {
     res.send(name.showJSON());
 })
 
-// This responds a GET request for abcd, abxcd, ab123cd, and so on
+// This responds a GET request for information about user
 app.get('/random/names/*', function(req, res) {
     console.log("Got a GET request random name");
     res.send(name.showInformationAboutName(randomName));
 })
+
+
+// This responds a GET request for random date
+app.get('/random/date/\\d{8}/\\d{8}', function(req, res) {
+    console.log(new Date(2016123100000));
+    res.send(new Date(req.url.substr(13,8)));
+})
+
 
 
 
