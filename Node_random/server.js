@@ -44,8 +44,25 @@ app.get('/random/names/*', function(req, res) {
 
 // This responds a GET request for random date
 app.get('/random/date/\\d{8}/\\d{8}', function(req, res) {
-    console.log(new Date(2016123100000));
-    res.send(new Date(req.url.substr(13,8)));
+    var startDate = req.url.substr(13,8);
+    var endDate = req.url.substr(22,8);
+
+    if( (startDate.length != 8) || (endDate.length != 8)){
+        res.send("Error! Invalid data!");
+    } else {
+        startDate = startDate.substring(0,2) + ',' + startDate.substring(2);
+        startDate = startDate.substring(0,5) + ',' + startDate.substring(5);
+
+        endDate = endDate.substring(0,2) + ',' + endDate.substring(2);
+        endDate = startDate.substring(0,5) + ',' + endDate.substring(5);
+
+        var minSec = (new Date(startDate)).getTime();
+        var maxSec = (new Date(endDate)).getTime();
+
+        var randomDate = Math.floor(Math.random() * (maxSec - minSec)) + minSec;
+
+        res.send(new Date(randomDate));
+    }
 })
 
 
