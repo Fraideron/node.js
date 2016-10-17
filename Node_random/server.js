@@ -35,6 +35,29 @@ app.get('/storage/json', function (req, res) {
     res.send(name.showJSON());
 })
 
+
+// This responds a GET request for random coordinates.
+app.get('/random/coordinates', function (req, res) {
+    var request = require("request")
+
+    var url = "https://maps.googleapis.com/maps/api/geocode/json?address=Moscov&" +
+        "key=AIzaSyC8W0Qrvdx7N1yfZwAW8GzPro2aWMoyewA"
+
+    request({
+        url: url,
+        json: true
+    }, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            res.send(body["results"][1]["geometry"]["location"]); // Print the json response
+
+        }
+    })
+
+    console.log("Got a GET request for random coordinateds");
+    //res.send("Random coordinate!");
+})
+
+
 // This responds a GET request for information about user
 app.get('/random/names/*', function(req, res) {
     console.log("Got a GET request random name");
