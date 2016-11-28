@@ -48,14 +48,62 @@ app.get('/random/coordinates', function (req, res) {
         json: true
     }, function (error, response, body) {
         if (!error && response.statusCode === 200) {
-            res.send(body["results"][1]["geometry"]["location"]); // Print the json response
-
+            var location = body["results"][1]["geometry"]["location"];
+            // res.send(body["results"][1]["geometry"]["location"]); // Print the json response
+            res.send({
+                result: {
+                    n: location.lat,
+                    e: location.lng
+                },
+                code: 'OK'
+            });
         }
     })
 
     console.log("Got a GET request for random coordinateds");
     //res.send("Random coordinate!");
 })
+
+
+// This responds a GET request for random ava
+app.get('/random/ava', function(req, res) {
+    console.log("Got a GET request random ava");
+    var reply = request("https://api.adorable.io/avatars/200/abott@adorable.io.png");
+    req.pipe(reply)
+    reply.pipe(res)
+
+})
+
+// This responds a GET request for information about user
+
+app.get('/random/jsonNames', function(req, res) {
+    var request = require("request")
+
+    var url = "http://uinames.com/api/?amount=1&gender=male&region=ukraine";
+
+    request({
+        url: url,
+        json: true
+    }, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            //var location = body["results"][1]["geometry"]["location"];
+            res.send(body); // Print the json response
+            /*res.send({
+                result: {
+                    n: location.lat,
+                    e: location.lng
+                },
+                code: 'OK'
+            });*/
+        }
+    })
+
+    console.log("Got a GET request json names");
+
+})
+
+
+
 
 
 // This responds a GET request for information about user
