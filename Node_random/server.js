@@ -7,49 +7,37 @@
 var express = require('express');
 var app = express();
 
-var Names = require('./storage/user')
-var name = new Names();
-var randomName = "";
+const resource = {
+    coordinates: {
+        googleAPI: require('./resources/coordinates/google-api-coordinates-resource')
+    },
+    uinames:{
+        uinamesAPI: require('./resources/names/uinames-api-resources')
+    }
 
+    //to add some data for
+};
 
-
-// This responds with "Hello World" on the homepage
-app.get('/random/names', function (req, res) {
-    console.log("Got a GET request for the random names");
-    randomName = name.showName();
-    res.send('<a href="./names/'+ randomName +'">' + randomName);
-})
 
 
 // This responds a POST request for the homepage
 app.get('/', function (req, res) {
     console.log("Got a POST request for the homepage");
     res.send('Hello POST');
+    log("Information", "Got a GET request for root page")
 })
 
 
 
 // This responds a GET request for the /list_user page.
-app.get('/storage/json', function (req, res) {
-    console.log("Got a GET request for /storage/json");
-    res.send(name.showJSON());
-})
 
 
 // This responds a GET request for random coordinates.
-app.get('/random/coordinates', function (req, res) {
-    var request = require("request")
+app.get('/random/:amount*?/coordinates', function (req, res) {
+    if (req.params.amount) {
 
-    var url = "https://maps.googleapis.com/maps/api/geocode/json?address=Moscov&" +
-        "key=AIzaSyC8W0Qrvdx7N1yfZwAW8GzPro2aWMoyewA"
-
-    request({
-        url: url,
-        json: true
-    }, function (error, response, body) {
-        if (!error && response.statusCode === 200) {
-            var location = body["results"][1]["geometry"]["location"];
-            // res.send(body["results"][1]["geometry"]["location"]); // Print the json response
+    } else {
+        resource.coordinates.googleAPI(function (location) {
             res.send({
                 result: {
                     n: location.lat,
@@ -57,62 +45,12 @@ app.get('/random/coordinates', function (req, res) {
                 },
                 code: 'OK'
             });
-        }
-    })
+        });
+    }
+    log("Information","Got a GET request for random coordinateds");
+});
 
-    console.log("Got a GET request for random coordinateds");
-    //res.send("Random coordinate!");
-})
-
-
-// This responds a GET request for random ava
-app.get('/random/ava', function(req, res) {
-    console.log("Got a GET request random ava");
-    var reply = request("https://api.adorable.io/avatars/200/abott@adorable.io.png");
-    req.pipe(reply)
-    reply.pipe(res)
-
-})
-
-// This responds a GET request for information about user
-
-app.get('/random/jsonNames', function(req, res) {
-    var request = require("request")
-
-    var url = "http://uinames.com/api/?amount=1&gender=male&region=ukraine";
-
-    request({
-        url: url,
-        json: true
-    }, function (error, response, body) {
-        if (!error && response.statusCode === 200) {
-            //var location = body["results"][1]["geometry"]["location"];
-            res.send(body); // Print the json response
-            /*res.send({
-                result: {
-                    n: location.lat,
-                    e: location.lng
-                },
-                code: 'OK'
-            });*/
-        }
-    })
-
-    console.log("Got a GET request json names");
-
-})
-
-
-
-
-
-// This responds a GET request for information about user
-app.get('/random/names/*', function(req, res) {
-    console.log("Got a GET request random name");
-    res.send(name.showInformationAboutName(randomName));
-})
-
-
+//:todo add random date without range
 // This responds a GET request for random date
 app.get('/random/date/\\d{8}/\\d{8}', function(req, res) {
     var startDate = req.url.substr(13,8);
@@ -134,16 +72,163 @@ app.get('/random/date/\\d{8}/\\d{8}', function(req, res) {
 
         res.send(new Date(randomDate));
     }
+});
+
+
+
+//This response a GET request from uinames API for credit card
+//:todo add option for all information and number of card
+app.get('/random/uinames/creditCard',function (req, res) {
+    resource.uinames.uinamesAPI(function (body) {
+        // todo: to add credit card return
+        res.send({
+            result: body.credit_card,
+            code: 'OK'
+        });
+    });
+    log("Information","Got a GET request for random namesio for credit card");
+});
+
+
+//This response a GET request from uinames API for email
+app.get('/random/uinames/email',function (req,res) {
+    resource.uinames.uinamesAPI(function (body) {
+        res.send({
+            result: body.email,
+            code: 'OK'
+        });
+    });
+    log("Information","Got a GET request for email");
+});
+
+app.get('/random/uinames/name',function (req, res) {
+    resource.uinames.uinamesAPI(function (body) {
+        res.send({
+            result: body.name,
+            code: 'OK'
+        });
+    });
+    log("Information","Got a GET request for name");
+});
+
+
+app.get('/random/uinames/surname',function (req, res) {
+    resource.uinames.uinamesAPI(function (body) {
+        res.send({
+            result: body.surname,
+            code: 'OK'
+        });
+    });
+    log("Information","Got a GET request for surname");
+});
+
+
+app.get('/random/uinames/age',function (req, res) {
+    resource.uinames.uinamesAPI(function (body) {
+        res.send({
+            result: body.age,
+            code: 'OK'
+        });
+    });
+    log("Information","Got a GET request for age");
+});
+
+
+
+
+
+//This response a GET request from uinames API for countries
+app.get('/random/uinames/region',function (req, res) {
+    resource.uinames.uinamesAPI(function (body) {
+        res.send({
+            result: body.region,
+            code: 'OK'
+        });
+    });
+    log("Information","Got a GET request for region");
+});
+
+
+//This response a GET request from uinames API for countries
+app.get('/random/uinames/mobile',function (req, res) {
+    resource.uinames.uinamesAPI(function (body) {
+        res.send({
+            result: body.phone,
+            code: 'OK'
+        });
+    });
+    log("Information","Got a GET request mobilePhone");
+
+});
+
+//This response a GET request from uinames API for countries
+app.get('/random/uinames/password',function (req, res) {
+    resource.uinames.uinamesAPI(function (body) {
+        res.send({
+            result: body.password,
+            code: 'OK'
+        });
+    });
+    log("Information","Got a GET request for random namesio for password");
+
+});
+
+
+app.get('/random/ip',function (req, res) {
+    let ip = ' ';
+    let first = Math.floor(Math.random() * 255);
+    let second = Math.floor(Math.random() * 255);
+    let third = Math.floor(Math.random() * 255);
+    let fourth = Math.floor(Math.random() * 255);
+    ip = first + '.' + second + '.' + third + '.' + fourth;
+    res.send({
+            rezult: ip,
+            code: 'OK'
+    });
+    log("Information","Got a GET request for random ip");
+});
+
+
+app.get('/random/ipv6',function (req, res) {
+    let tempMass = ['1','2','3','4',
+                    '5','6','7','8',
+                    '9','0','a','b',
+                    'c','d','e','f'];
+    let arrValues = tempMass.length;
+    let ip = '';
+    for(let i = 0; i < 8; i++){
+        for(let j = 0; j < 4; j++){
+            ip += tempMass[Math.floor(Math.random() * arrValues )];
+        }
+        ip += '.';
+    };
+    ip = ip.substr(0, ip.length-1);
+    res.send({
+        rezult: ip,
+        code: 'OK'
+    });
+    log("Information","Got a GET request for random ip");
+});
+
+function log(type, body) {
+    var date = new Date();
+    var hours = date.getHours();
+    var minutes = "0" + date.getMinutes();
+    var seconds = "0" + date.getSeconds();
+    var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+
+    console.log(formattedTime + " " + type +" [" + body + "]"+"\n");
+};
+
+
+
+
+let server = app.listen(8081, function () {
+
+    let host = server.address().address;
+    let port = server.address().port;
+
+    log("Information!", "Example app listening at http://%s:%s" + host + port);
+
 })
 
-
-
-
-var server = app.listen(8081, function () {
-
-    var host = server.address().address;
-    var port = server.address().port;
-
-    console.log("Example app listening at http://%s:%s", host, port)
-
-})
